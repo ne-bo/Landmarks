@@ -1,0 +1,25 @@
+
+Traceback (most recent call last):
+  File "/home/natasha/PycharmProjects/Landmark/spoc.py", line 137, in <module>
+    get_spoc()
+  File "/home/natasha/PycharmProjects/Landmark/spoc.py", line 98, in get_spoc
+    'all_spocs_file_train', 'all_labels_file_train')
+  File "/home/natasha/PycharmProjects/Landmark/spoc.py", line 38, in save_all_spocs_and_labels
+    for data in loader:
+  File "/home/natasha/YaSpec/yaSpecEnv/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 201, in __next__
+    return self._process_next_batch(batch)
+  File "/home/natasha/YaSpec/yaSpecEnv/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 221, in _process_next_batch
+    raise batch.exc_type(batch.exc_msg)
+OSError: Traceback (most recent call last):
+  File "/home/natasha/YaSpec/yaSpecEnv/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 40, in _worker_loop
+    samples = collate_fn([dataset[i] for i in batch_indices])
+  File "/home/natasha/YaSpec/yaSpecEnv/lib/python3.6/site-packages/torch/utils/data/dataloader.py", line 40, in <listcomp>
+    samples = collate_fn([dataset[i] for i in batch_indices])
+  File "/home/natasha/PycharmProjects/Landmark/landmark_loader.py", line 98, in __getitem__
+    image = self.transform(Image.open(images_paths[index]))
+  File "/home/natasha/YaSpec/yaSpecEnv/lib/python3.6/site-packages/PIL/Image.py", line 2585, in open
+    % (filename if filename else fp))
+OSError: cannot identify image file '/media/natasha/Data/Landmark Kaggle/train/eae23e6a6da38261.jpg'
+
+
+Process finished with exit code 1
