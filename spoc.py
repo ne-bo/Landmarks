@@ -39,10 +39,10 @@ def save_all_spocs_and_labels(loader, network, file_spoc, file_labels):
         progress = progress + 1
         if progress % 1000 == 0:
             print('progress ', progress, ' ', datetime.datetime.now())
-        if progress > 40000:
+        if progress > 0:
             images, labels = data
             outputs = network(Variable(images).cuda())
-            compute_spocs(all_labels, all_spocs, file_labels, file_spoc, labels, outputs, progress)
+            all_spocs, all_labels = compute_spocs(all_labels, all_spocs, file_labels, file_spoc, labels, outputs, progress)
 
 
 def compute_spocs(all_labels, all_spocs, file_labels, file_spoc, labels, outputs, progress):
@@ -54,12 +54,16 @@ def compute_spocs(all_labels, all_spocs, file_labels, file_spoc, labels, outputs
         print('labels in batch ', labels.numpy())
         # print('spocs ', spocs)
         print('all_spocs ', all_spocs)
-    if progress % 10000 == 0:
+    if progress % 2000 == 0 or progress == 1093759:
         print('all_spocs', all_spocs)
         print('all_labels', all_labels)
         torch.save(all_spocs, '%s-%d' % (file_spoc, progress))
         torch.save(all_labels, '%s-%d' % (file_labels, progress))
+        # flush big tensors after intermediate saving
+        all_spocs = torch.cuda.FloatTensor()
+        all_labels = torch.LongTensor()
         gc.collect()
+    return all_spocs, all_labels
 
 
 def read_spocs_and_labels(file_spoc, file_labels):

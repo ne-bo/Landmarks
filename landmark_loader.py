@@ -1,3 +1,4 @@
+import torch
 import torchvision.transforms as transforms
 import torch.utils.data as data
 import numpy as np
@@ -88,22 +89,28 @@ class Landmark(Dataset):
             images_paths = self.test_images
             labels = self.test_labels
 
-        if os.path.exists(images_paths[index]):
-            image = self.transform(Image.open(images_paths[index]))
-            label = labels[index]
-            #print('label ', label)
+        if index > -1:
+            if os.path.exists(images_paths[index]):
+                try:
+                    image = self.transform(Image.open(images_paths[index]))
+                except:
+                    print('images_paths[index] !!!!', images_paths[index])
+                label = labels[index]
+                #print('label ', label)
+            else:
+                print('Image %s is not downloaded yet!', images_paths[index])
+
+            if image.shape[0] == 1:
+                # print('Grayscale image is found! ', self.images_paths[index])
+                image = transform_for_correction(image)
+                image = transforms.ImageOps.colorize(image, (0, 0, 0), (255, 255, 255))
+                image = self.transform(image)
+                # print('new image.shape ', image.shape)
+
+            if image.shape[1] < initial_image_size or image.shape[2] < initial_image_size:
+                print('image is too small', image.shape)
         else:
-            print('Image %s is not downloaded yet!', images_paths[index])
-
-        if image.shape[0] == 1:
-            # print('Grayscale image is found! ', self.images_paths[index])
-            image = transform_for_correction(image)
-            image = transforms.ImageOps.colorize(image, (0, 0, 0), (255, 255, 255))
-            image = self.transform(image)
-            # print('new image.shape ', image.shape)
-
-        if image.shape[1] < initial_image_size or image.shape[2] < initial_image_size:
-            print('image is too small', image.shape)
+            image, label = torch.from_numpy(np.zeros((1, 1))), labels[index]
 
         return image, label
 
