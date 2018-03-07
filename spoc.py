@@ -39,7 +39,7 @@ def save_all_spocs_and_labels(loader, network, file_spoc, file_labels):
         progress = progress + 1
         if progress % 1000 == 0:
             print('progress ', progress, ' ', datetime.datetime.now())
-        if progress > 0:
+        if progress > 150000:
             images, labels = data
             outputs = network(Variable(images).cuda())
             all_spocs, all_labels = compute_spocs(all_labels, all_spocs, file_labels, file_spoc, labels, outputs, progress)
