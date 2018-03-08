@@ -39,7 +39,7 @@ def save_all_spocs_and_labels(loader, network, file_spoc, file_labels):
         progress = progress + 1
         if progress % 1000 == 0:
             print('progress ', progress, ' ', datetime.datetime.now())
-        if progress > 150000:
+        if progress > 0:
             images, labels = data
             outputs = network(Variable(images).cuda())
             all_spocs, all_labels = compute_spocs(all_labels, all_spocs, file_labels, file_spoc, labels, outputs, progress)
@@ -54,7 +54,7 @@ def compute_spocs(all_labels, all_spocs, file_labels, file_spoc, labels, outputs
         print('labels in batch ', labels.numpy())
         # print('spocs ', spocs)
         print('all_spocs ', all_spocs)
-    if progress % 2000 == 0 or progress == 1093759:
+    if progress % 2000 == 0: # labels in batch  [1089995 1089996 1089997 1089998 1089999]
         print('all_spocs', all_spocs)
         print('all_labels', all_labels)
         torch.save(all_spocs, '%s-%d' % (file_spoc, progress))
@@ -98,8 +98,8 @@ def get_spoc():
 
     # should be batch_size x 512 x 37 x 37
     print('next(representation_network ', representation_network)
-    save_all_spocs_and_labels(train_loader, representation_network,
-                                                                  'all_spocs_file_train', 'all_labels_file_train')
+    #save_all_spocs_and_labels(train_loader, representation_network,
+    #                                                              'all_spocs_file_train', 'all_labels_file_train')
 
     save_all_spocs_and_labels(test_loader, representation_network,
                                                                 'all_spocs_file_test', 'all_labels_file_test')
