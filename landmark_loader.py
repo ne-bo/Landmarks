@@ -89,7 +89,7 @@ class Landmark(Dataset):
             images_paths = self.test_images
             labels = self.test_labels
 
-        if index > -1:
+        if index > 1089999:
             if os.path.exists(images_paths[index]):
                 try:
                     image = self.transform(Image.open(images_paths[index]))
