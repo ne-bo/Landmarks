@@ -5,15 +5,20 @@
 # LICENSE file in the root directory of this source tree.
 
 import numpy as np
+import torch
 
-d = 64                           # dimension
-nb = 100000                      # database size
-nq = 10000                       # nb of queries
+all_spocs_train = torch.load('new_all_spocs_file_train_after_pca')
+all_spocs_test = torch.load('new_all_spocs_file_test_after_pca')
+
+print('all_spocs_train_after_pca', all_spocs_train.shape)
+print('all_spocs_test_after_pca', all_spocs_test.shape)
+
+d = 256                           # dimension
+nb = 1093759                      # database size
+nq = 115977                       # nb of queries
 np.random.seed(1234)             # make reproducible
-xb = np.random.random((nb, d)).astype('float32')
-xb[:, 0] += np.arange(nb) / 1000.
-xq = np.random.random((nq, d)).astype('float32')
-xq[:, 0] += np.arange(nq) / 1000.
+xb = all_spocs_train.cpu().numpy()
+xq = all_spocs_test.cpu().numpy()
 
 import sys
 
@@ -27,10 +32,16 @@ print(index.is_trained)
 index.add(xb)                  # add vectors to the index
 print(index.ntotal)
 
-k = 4                          # we want to see 4 nearest neighbors
+k = 100                          # we want to see 100 nearest neighbors
 D, I = index.search(xb[:5], k) # sanity check
+print('I and D')
 print(I)
 print(D)
 D, I = index.search(xq, k)     # actual search
+print('neighbors of the 5 first queries')
 print(I[:5])                   # neighbors of the 5 first queries
+print('neighbors of the 5 last queries')
 print(I[-5:])                  # neighbors of the 5 last queries
+
+print('I.shape ', I.shape)
+np.save('100_nearest_neighbors', I)
