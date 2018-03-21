@@ -7,9 +7,9 @@ from PIL import Image
 import script
 import os
 
-batch_size = 5
-initial_image_size = 586 # for VGG
-initial_image_scale_size = 586 # for VGG
+batch_size = 10
+initial_image_size = 224 # for resnet
+initial_image_scale_size = 224 # for resnet
 
 
 def get_filenames_and_labels(data_folder, test_or_train='test'):
@@ -117,7 +117,7 @@ class Landmark(Dataset):
 
 def create_transformations_for_test_and_train():
     transform_train = transforms.Compose([
-        transforms.Scale(initial_image_scale_size),
+        # transforms.Scale(initial_image_scale_size), # we don't need this for resized dataset
         transforms.RandomCrop(initial_image_size, padding=0),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
@@ -125,7 +125,7 @@ def create_transformations_for_test_and_train():
         # transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
     ])
     transform_test = transforms.Compose([
-        transforms.Scale(initial_image_scale_size),
+        # transforms.Scale(initial_image_scale_size), # we don't need this for resized dataset
         transforms.CenterCrop(initial_image_size),
         transforms.ToTensor(),
         # transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),

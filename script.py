@@ -11,6 +11,7 @@
 import sys, os, multiprocessing, csv, urllib.request
 from PIL import Image
 from io import StringIO, BytesIO
+import numpy as np
 
 
 def ParseData(data_file):
@@ -18,6 +19,13 @@ def ParseData(data_file):
     csvreader = csv.reader(csvfile)
     key_url_list = [line[:2] for line in csvreader]
     return key_url_list[1:]  # Chop off header
+
+
+def ParseDataWithLabels(data_file):
+    csvfile = open(data_file, 'r')
+    csvreader = csv.reader(csvfile)
+    key_label_list = [line[:3] for line in csvreader]
+    return key_label_list[1:]  # Chop off header
 
 
 def DownloadImage(key_url):

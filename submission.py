@@ -1,33 +1,17 @@
 import numpy as np
 
-import script
+from utils import get_all_keys, get_existing_keys
 
-with open('keys_for_test', "r") as fin:
-    line = fin.readline()
+existing_keys = get_existing_keys('keys_for_test')
 
-existing_test_keys = np.array(list(map(str, line.split())))
+existing_train_keys = get_existing_keys('keys_for_train')
 
-with open('keys_for_train', "r") as fin:
-    line = fin.readline()
+all_test_keys = get_all_keys('/media/natasha/Data/Landmark Kaggle/test.csv')
 
-existing_train_keys = np.array(list(map(str, line.split())))
-
-for i, key in enumerate(existing_test_keys):
-    existing_test_keys[i] = existing_test_keys[i].replace('.jpg', '')
-
-for i, key in enumerate(existing_train_keys):
-    existing_train_keys[i] = existing_train_keys[i].replace('.jpg', '')
-
-print('existing_test_keys ', existing_test_keys)
-
-keys_urls = script.ParseData('test.csv')
-all_test_keys = []
-for i, pair in enumerate(keys_urls):
-    all_test_keys.append(pair[0])
-
-print('all_test_keys ', all_test_keys)
-
-neighbors = np.load('100_nearest_neighbors.npy')
+print('all_test_keys ', len(all_test_keys))
+print('existing_keys ', len(existing_keys))
+input()
+neighbors = np.load('100_nearest_neighbors_resnet.npy')
 print('neighbors', neighbors)
 
 
@@ -37,10 +21,10 @@ def get_neighbors(neighbors, existing_train_keys, existing_test_keys, test_key):
     return existing_train_keys[neighbors_indices]
 
 
-def get_dummy_neighbors():
+def get_dummy_neighbors(existing_train_keys):
     result = []
-    for i in range(100):
-        result.append('b6055a3d08503c42')
+    for i in np.random.random_integers(low=0, high=existing_train_keys.shape[0] - 1, size=100):
+        result.append(existing_train_keys[i])
     return result
 
 
@@ -48,14 +32,14 @@ def get_dummy_neighbors():
 # 000088da12d664db,0370c4c856f096e8 766677ab964f4311 e3ae4dcee8133159...
 # etc.
 count_dummy = 0
-with open('natasha_submission.csv', "w") as fout:
+with open('natasha_submission-resnet-random-dummy.csv', "w") as fout:
     fout.write('id,images\n')
     for key in all_test_keys:
         fout.write(key + ',')
-        if key in existing_test_keys:
-            neighbors_list = get_neighbors(neighbors, existing_train_keys, existing_test_keys, key)
+        if key in existing_keys:
+            neighbors_list = get_neighbors(neighbors, existing_train_keys, existing_keys, key)
         else:
-            neighbors_list = get_dummy_neighbors()
+            neighbors_list = get_dummy_neighbors(existing_train_keys)
             count_dummy = count_dummy + 1
             print('count_dummy', count_dummy)
         fout.write(" ".join([str(el) for el in neighbors_list]))
