@@ -12,6 +12,7 @@ import numpy as np
 
 from utils import restore_from_the_epoch, create_optimizer_and_lr_scheduler
 from histogramm_loss import HistogramLoss
+from margin_loss_for_similarity import MarginLossForSimilarity
 
 def learning_process(
         train_loader,
@@ -93,7 +94,7 @@ def do_trainig(
         learning_rate_decay_coefficient,
         number_of_epochs
 ):
-    name_prefix_for_saved_model = 'representation-'
+    name_prefix_for_saved_model = 'representation-margin-'
     optimizer, exp_lr_scheduler = create_optimizer_and_lr_scheduler(
         learning_rate_decay_coefficient,
         learning_rate_decay_epoch,
@@ -122,7 +123,8 @@ def do_trainig(
     learning_process(
         train_loader=train_loader,
         network=network,
-        criterion=HistogramLoss(150),
+        #criterion=HistogramLoss(150),
+        criterion=MarginLossForSimilarity(),
         optimizer=optimizer,
         start_epoch=start_epoch,
         lr_scheduler=exp_lr_scheduler,
